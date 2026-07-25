@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VSS Chat Platform - Đăng nhập vào tài khoản của bạn</title>
+  <meta name="description" content="Hệ thống quản lý chat đa nền tảng - Tiết kiệm thời gian tư vấn và chăm sóc khách hàng. VSS Chat Platform.">
+  <!-- Google Fonts for modern typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Left Banner (Group 18171 is the entire left section) -->
+    <div class="left-banner">
+      <img src="./Assets/Login/group_18171.png" alt="Hệ thống quản lý chat đa nền tảng" class="banner-bg-img">
+      <div class="text-wrapper">
+        <h1 class="banner-title">Hệ thống quản lý chat đa nền tảng</h1>
+        <p class="banner-subtitle">Tiết kiệm thời gian tư vấn và chăm sóc khách hàng</p>
+        <div class="pagination-dots">
+          <span class="dot active"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Side Content -->
+    <div class="right-section">
+      <!-- Top Bar: Language Switcher & Toast Container -->
+      <div class="top-bar">
+        <div class="toast-container" id="toastContainer">
+          <!-- Toasts will be injected or toggled here -->
+          <div class="toast error-toast hidden" id="errorToast">
+            <div class="toast-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" fill="#e60012" stroke="none"></circle>
+                <path d="M15 9l-6 6M9 9l6 6" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"></path>
+              </svg>
+            </div>
+            <div class="toast-message">Bạn đã nhập sai tài khoản hoặc mật khẩu</div>
+          </div>
+        </div>
+        <div class="lang-dropdown">
+          <button class="lang-btn" type="button" aria-label="Chọn ngôn ngữ">
+            <svg class="globe-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <span>Tiếng Việt</span>
+            <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Center Auth Card -->
+      <div class="auth-card-container">
+        <div class="auth-card">
+          
+          <!-- VIEW 1: MAIN LOGIN -->
+          <div class="view-pane active" id="view-login">
+            <div class="card-header-logo">
+              <img src="./Assets/Login/logo.png" alt="VSS Chat Platform" class="brand-logo">
+            </div>
+            <h2 class="card-title">Đăng nhập vào tài khoản của bạn</h2>
+            <form id="loginForm" class="auth-form" novalidate>
+              <!-- Account Input -->
+              <div class="form-group" id="accountGroup">
+                <div class="input-wrapper">
+                  <label for="accountInput" class="floating-label">Tài khoản</label>
+                  <input type="text" id="accountInput" class="form-input" placeholder="Nhập tài khoản" autocomplete="username">
+                </div>
+                <span class="error-message" id="accountError">Bạn chưa nhập tài khoản</span>
+              </div>
+              
+              <!-- Password Input -->
+              <div class="form-group" id="passwordGroup">
+                <div class="input-wrapper">
+                  <label for="passwordInput" class="floating-label">Mật khẩu</label>
+                  <input type="password" id="passwordInput" class="form-input" placeholder="Nhập mật khẩu" autocomplete="current-password">
+                  <button type="button" class="toggle-password" data-target="passwordInput" aria-label="Toggle password visibility">
+                    <!-- Eye Slash SVG -->
+                    <svg class="icon-eye-slash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                      <line x1="1" y1="1" x2="23" y2="23"></line>
+                    </svg>
+                    <!-- Eye SVG -->
+                    <svg class="icon-eye hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </button>
+                </div>
+                <span class="error-message" id="passwordError">Bạn chưa nhập mật khẩu</span>
+              </div>
+
+              <!-- Form Row: Remember Me & Forgot Password -->
+              <div class="form-row">
+                <label class="checkbox-label" for="savePassword">
+                  <input type="checkbox" id="savePassword">
+                  <span class="custom-checkbox">
+                    <svg viewBox="0 0 12 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                    </svg>
+                  </span>
+                  <span>Lưu mật khẩu</span>
+                </label>
+                <a href="#forgot" class="forgot-link" id="linkToForgot">Quên mật khẩu?</a>
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-primary btn-submit">Đăng nhập</button>
+            </form>
+            <div class="card-footer">
+              <p>Bạn chưa có tài khoản? <a href="#register" class="register-link">Đăng ký</a></p>
+            </div>
+          </div>
+
+          <!-- VIEW 2: FORGOT PASSWORD - STEP 1 (EMAIL) -->
+          <div class="view-pane" id="view-forgot-email">
+            <div class="red-header-bar">
+              <button type="button" class="btn-back" data-goto="view-login">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                Quay lại
+              </button>
+              <h3 class="header-title">Quên mật khẩu</h3>
+            </div>
+            <div class="pane-body">
+              <div class="step-icon-wrapper">
+                <img src="./Assets/dang_nhap_quen_tai_khoan_nhap_email/group_18198.png" alt="Quên mật khẩu" class="step-image">
+              </div>
+              <h3 class="step-title red-title">Bạn đã quên mật khẩu?</h3>
+              <p class="step-desc">Đừng lo lắng, hãy nhập tài khoản hoặc email của bạn ở dưới để tìm kiếm tài khoản của bạn</p>
+              
+              <form id="forgotEmailForm" class="auth-form" novalidate>
+                <div class="form-group">
+                  <div class="input-wrapper simple-box">
+                    <input type="text" id="forgotEmailInput" class="form-input" placeholder="Nhập tài khoản/email">
+                  </div>
+                </div>
+                <button type="submit" id="btnForgotEmailNext" class="btn btn-primary btn-step" disabled>Tiếp tục</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- VIEW 3: FORGOT PASSWORD - STEP 2 (RECEIVE CODE) -->
+          <div class="view-pane" id="view-forgot-code">
+            <div class="red-header-bar">
+              <button type="button" class="btn-back" data-goto="view-forgot-email">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                Quay lại
+              </button>
+              <h3 class="header-title">Quên mật khẩu</h3>
+            </div>
+            <div class="pane-body">
+              <div class="step-icon-wrapper">
+                <img src="./Assets/dang_nhap_quen_tai_khoan_nhan_code/group_18209.png" alt="Kiểm tra mail" class="step-image">
+              </div>
+              <h3 class="step-title red-title">Kiểm tra mail</h3>
+              <p class="step-desc">Chúng tôi đã gửi cho bạn mã xác nhận. Vui lòng kiểm tra mã trong email của bạn.</p>
+              
+              <form id="forgotCodeForm" class="auth-form" novalidate>
+                <div class="form-group">
+                  <div class="input-wrapper input-with-btn">
+                    <input type="text" id="verificationCodeInput" class="form-input" placeholder="Nhập mã" maxlength="6">
+                    <span class="divider"></span>
+                    <button type="button" class="btn-resend" id="btnResendCode">Gửi lại mã</button>
+                  </div>
+                </div>
+                <button type="submit" id="btnForgotCodeNext" class="btn btn-primary btn-step" disabled>Tiếp tục</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- VIEW 4: FORGOT PASSWORD - STEP 3 (NEW PASSWORD) -->
+          <div class="view-pane" id="view-forgot-newpass">
+            <div class="red-header-bar">
+              <button type="button" class="btn-back" data-goto="view-forgot-code">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                Quay lại
+              </button>
+              <h3 class="header-title">Quên mật khẩu</h3>
+            </div>
+            <div class="pane-body">
+              <div class="step-icon-wrapper">
+                <img src="./Assets/dang_nhap_quen_tai_khoan_nhap_mat_khau_moi/group_18210.png" alt="Tạo mật khẩu mới" class="step-image">
+              </div>
+              <h3 class="step-title red-title">Tạo mật khẩu mới</h3>
+              <p class="step-desc">Mật khẩu mới của bạn phải khác với mật khẩu cũ đã được sử dụng.</p>
+              
+              <form id="forgotNewPassForm" class="auth-form" novalidate>
+                <div class="form-group">
+                  <div class="input-wrapper">
+                    <label for="newPassInput" class="floating-label">Mật khẩu mới</label>
+                    <input type="password" id="newPassInput" class="form-input" placeholder="Mật khẩu mới">
+                    <button type="button" class="toggle-password" data-target="newPassInput">
+                      <svg class="icon-eye-slash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                      <svg class="icon-eye hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="input-wrapper">
+                    <label for="confirmNewPassInput" class="floating-label">Nhập lại mật khẩu mới</label>
+                    <input type="password" id="confirmNewPassInput" class="form-input" placeholder="Nhập lại mật khẩu mới">
+                    <button type="button" class="toggle-password" data-target="confirmNewPassInput">
+                      <svg class="icon-eye-slash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                      <svg class="icon-eye hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </button>
+                  </div>
+                </div>
+                <button type="submit" id="btnForgotNewPassConfirm" class="btn btn-primary btn-step">Xác nhận</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- VIEW 5: FIRST TIME LOGIN - CHANGE PASSWORD -->
+          <div class="view-pane" id="view-first-time">
+            <div class="red-header-bar">
+              <button type="button" class="btn-back" data-goto="view-login">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                Quay lại
+              </button>
+              <h3 class="header-title">Đổi mật khẩu</h3>
+            </div>
+            <div class="pane-body">
+              <div class="step-icon-wrapper">
+                <img src="./Assets/dang_nhap_quen_tai_khoan_nhap_email/group_18198.png" alt="Đăng nhập lần đầu" class="step-image">
+              </div>
+              <h3 class="step-title red-title">Đăng nhập lần đầu</h3>
+              <p class="step-desc">Đây là lần đầu tiên đăng nhập của bạn, bước đầu tiên bạn cần đổi mật khẩu để đảm bảo tính bảo mật cho tài khoản</p>
+              
+              <form id="firstTimePassForm" class="auth-form" novalidate>
+                <div class="form-group">
+                  <div class="input-wrapper simple-box">
+                    <input type="password" id="firstTimeNewPass" class="form-input" placeholder="Nhập mật khẩu mới">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="input-wrapper simple-box">
+                    <input type="password" id="firstTimeConfirmPass" class="form-input" placeholder="Nhập lại mật khẩu mới">
+                  </div>
+                </div>
+                <button type="submit" id="btnFirstTimeSubmit" class="btn btn-primary btn-step">Tiếp tục</button>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script -->
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
