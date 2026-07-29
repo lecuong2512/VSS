@@ -632,3 +632,43 @@ a {
 .btn-step {
   margin-top: 8px;
 }
+
+/* Custom Toast Styles (Success & Warning) */
+.top-bar .toast-container .toast.success-toast {
+  border-color: rgba(16, 185, 129, 0.3);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.15), 0 3px 10px rgba(0, 0, 0, 0.06);
+}
+.top-bar .toast-container .toast.success-toast .toast-icon {
+  background-color: #10b981;
+}
+.top-bar .toast-container .toast.success-toast .toast-message {
+  color: #065f46;
+}
+
+.top-bar .toast-container .toast.warning-toast {
+  border-color: rgba(245, 158, 11, 0.3);
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.15), 0 3px 10px rgba(0, 0, 0, 0.06);
+}
+.top-bar .toast-container .toast.warning-toast .toast-icon {
+  background-color: #f59e0b;
+}
+.top-bar .toast-container .toast.warning-toast .toast-message {
+  color: #92400e;
+}
+
+/* Spinner for button loading state */
+.spinner-inline {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+

@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VSS Chat Platform - Danh sách Đối tác</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #ffffff;
+      --bg-sidebar-nav: #ffffff;
+      --bg-sidebar-sub: #f8fafc;
+      --bg-pill-active: #fff0f2;
+      --accent-red: #e60012;
+      --accent-red-hover: #cc0010;
+      --accent-blue: #2563eb;
+      --accent-blue-hover: #1d4ed8;
+      --text-dark: #0f172a;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      --border-color: #e2e8f0;
+      --border-light: #f1f5f9;
+      --success-green: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* 1. LEFTMOST VERTICAL NAV SIDEBAR */
+    .app-sidebar {
+      width: 84px;
+      background: var(--bg-sidebar-nav);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 16px;
+      gap: 28px;
+      z-index: 30;
+      flex-shrink: 0;
+    }
+
+    .logo-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    .logo-box img {
+      width: 46px;
+      height: 46px;
+      object-fit: contain;
+    }
+
+    .nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      padding: 0 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 12px 6px;
+      border-radius: 14px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .nav-item:hover {
+      background: var(--bg-sidebar-sub);
+      color: var(--text-dark);
+    }
+
+    .nav-item.active {
+      background: var(--bg-pill-active);
+      color: var(--accent-red);
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(230, 0, 18, 0.08);
+    }
+
+    .nav-icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    /* 2. RIGHT APP CONTAINER */
+    .app-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* TOP HEADER BAR */
+    .top-header {
+      height: 64px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      flex-shrink: 0;
+      z-index: 20;
+    }
+
+    .top-tabs {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tab-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: var(--bg-sidebar-sub);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-pill:hover {
+      background: #e2e8f0;
+    }
+
+    .tab-pill.active {
+      background: #ffffff;
+      color: var(--text-dark);
+      font-weight: 600;
+      border-color: var(--border-color);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    .tab-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+    }
+
+    .tab-close {
+      font-size: 14px;
+      color: var(--text-light);
+      margin-left: 4px;
+      line-height: 1;
+      padding: 2px;
+      border-radius: 4px;
+    }
+
+    .tab-close:hover {
+      background: rgba(0, 0, 0, 0.08);
+      color: var(--text-dark);
+    }
+
+    .top-user-actions {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .btn-notify {
+      position: relative;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-notify:hover {
+      background: var(--bg-sidebar-sub);
+      color: var(--text-dark);
+    }
+
+    .notify-dot {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 8px;
+      height: 8px;
+      background: var(--accent-red);
+      border-radius: 50%;
+      border: 2px solid #fff;
+    }
+
+    .user-profile-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 30px;
+      transition: background 0.2s;
+    }
+
+    .user-profile-box:hover {
+      background: var(--bg-sidebar-sub);
+    }
+
+    .user-avatar-wrap {
+      position: relative;
+      width: 36px;
+      height: 36px;
+    }
+
+    .user-avatar {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #fff;
+      font-size: 14px;
+      overflow: hidden;
+    }
+
+    .user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .online-badge {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 10px;
+      height: 10px;
+      background: var(--success-green);
+      border: 2px solid #fff;
+      border-radius: 50%;
+    }
+
+    .user-meta {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-fullname {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .user-role-text {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .user-role-text::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: var(--success-green);
+      border-radius: 50%;
+    }
+
+    /* MAIN HORIZONTAL BODY */
+    .main-body {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* 3. SECONDARY SIDEBAR (PARTNER DETAILS / MENU) */
+    .partner-sidebar {
+      width: 270px;
+      background: var(--bg-sidebar-sub);
+      border-right: 1px solid var(--border-color);
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      flex-shrink: 0;
+      overflow-y: auto;
+    }
+
+    .breadcrumb {
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    .breadcrumb span.current {
+      color: var(--text-dark);
+      font-weight: 600;
+    }
+
+    .partner-brand-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 4px 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .partner-logo {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .partner-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .partner-info {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .partner-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 2px;
+    }
+
+    .partner-email {
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .btn-chat-bubble {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 50%;
+      transition: color 0.2s;
+    }
+
+    .btn-chat-bubble:hover {
+      color: var(--accent-blue);
+      background: rgba(37, 99, 235, 0.08);
+    }
+
+    .partner-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .menu-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-main);
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .menu-link:hover {
+      background: rgba(0, 0, 0, 0.04);
+    }
+
+    .menu-link.active {
+      background: #ffffff;
+      color: var(--accent-red);
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .menu-link-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .menu-badge {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-red);
+    }
+
+    /* 4. RIGHT CONTENT AREA */
+    .content-area {
+      flex: 1;
+      background: #ffffff;
+      padding: 24px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    /* SOFTWARE HEADER BANNER */
+    .software-banner {
+      background: var(--bg-sidebar-sub);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .btn-back {
+      background: none;
+      border: none;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+    }
+
+    .btn-back:hover {
+      color: var(--text-dark);
+    }
+
+    .software-title {
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .software-badge {
+      background: var(--accent-blue);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 6px;
+    }
+
+    /* ACTION BAR */
+    .action-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .action-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .action-label {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .view-toggle-group {
+      display: inline-flex;
+      align-items: center;
+      background: var(--bg-sidebar-sub);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 3px;
+    }
+
+    .view-btn {
+      background: none;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .view-btn.active {
+      background: var(--bg-pill-active);
+      color: var(--accent-red);
+    }
+
+    .btn-sort-dropdown {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-sidebar-sub);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    .btn-sort-dropdown:hover {
+      background: #e2e8f0;
+    }
+
+    .btn-create-script {
+      background: var(--accent-red);
+      color: #ffffff;
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(230, 0, 18, 0.2);
+      transition: all 0.2s;
+    }
+
+    .btn-create-script:hover {
+      background: var(--accent-red-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(230, 0, 18, 0.3);
+    }
+
+    .icon-plus-circle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      border: 1.5px solid #fff;
+      border-radius: 50%;
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    /* CARDS GRID */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 330px));
+      gap: 24px;
+    }
+
+    .script-card {
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    .script-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+      border-color: #cbd5e1;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .card-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--accent-blue);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .card-title-box {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 2px;
+    }
+
+    .card-subtitle {
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    .btn-card-menu {
+      background: none;
+      border: none;
+      color: var(--text-light);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px;
+      line-height: 1;
+    }
+
+    .btn-card-menu:hover {
+      color: var(--text-dark);
+    }
+
+    .card-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .stat-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .stat-val {
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .card-footer {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-top: 6px;
+    }
+
+    .category-label {
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    .category-link {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--accent-blue);
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.2s;
+      width: fit-content;
+    }
+
+    .category-link:hover {
+      text-decoration: underline;
+      color: var(--accent-blue-hover);
+    }
+
+    /* FLOATING ACTION BUTTON (FAB) */
+    .fab-bot {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 64px;
+      height: 64px;
+      background: transparent;
+      border: none;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: none;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      z-index: 50;
+    }
+
+    .fab-bot:hover {
+      transform: scale(1.1);
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .fab-bot svg {
+      width: 28px;
+      height: 28px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. LEFTMOST VERTICAL NAV SIDEBAR -->
+  <aside class="app-sidebar">
+    <a href="index.html" class="logo-box">
+      <img src="./Assets/danh_sach_doi_tac/logo.png" alt="VSS Logo">
+    </a>
+
+    <nav class="nav-list">
+      <a class="nav-item">
+        <div class="nav-icon">
+          <!-- Live chat icon -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </div>
+        <span>Live chat</span>
+      </a>
+
+      <a class="nav-item active">
+        <div class="nav-icon">
+          <!-- Đối tác icon (Shield/Partner badge) -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <circle cx="12" cy="11" r="3"></circle>
+          </svg>
+        </div>
+        <span>Đối tác</span>
+      </a>
+
+      <a class="nav-item">
+        <div class="nav-icon">
+          <!-- Template icon -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="3" y1="9" x2="21" y2="9"></line>
+            <line x1="9" y1="21" x2="9" y2="9"></line>
+          </svg>
+        </div>
+        <span>Template</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- 2. RIGHT APP CONTAINER -->
+  <div class="app-container">
+    
+    <!-- TOP HEADER BAR -->
+    <header class="top-header">
+      <div class="top-tabs">
+        <div class="tab-pill">
+          <span class="tab-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </span>
+          <span>Đối tác</span>
+          <span class="tab-close">×</span>
+        </div>
+
+        <div class="tab-pill active">
+          <span class="tab-icon">
+            <img src="./Assets/danh_sach_doi_tac/nccplus.png" alt="NCCPlus" style="width: 18px; height: 18px; object-fit: contain;">
+          </span>
+          <span>NCCPlus</span>
+          <span class="tab-close">×</span>
+        </div>
+      </div>
+
+      <div class="top-user-actions">
+        <button class="btn-notify" aria-label="Thông báo">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="notify-dot"></span>
+        </button>
+
+        <div class="user-profile-box" id="userProfileDropdown">
+          <div class="user-avatar-wrap">
+            <div class="user-avatar" id="userAvatarText">L</div>
+            <span class="online-badge"></span>
+          </div>
+          <div class="user-meta">
+            <span class="user-fullname" id="userNameDisplay">Lê Việt Cường</span>
+            <span class="user-role-text">Quản lý</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN HORIZONTAL BODY -->
+    <div class="main-body">
+      
+      <!-- 3. SECONDARY SIDEBAR (PARTNER DETAILS) -->
+      <aside class="partner-sidebar">
+        <div class="breadcrumb">
+          Đối tác / Danh sách đối tác / <span class="current">NCCPlus</span>
+        </div>
+
+        <div class="partner-brand-box">
+          <div class="partner-logo">
+            <img src="./Assets/danh_sach_doi_tac/nccplus.png" alt="NCCPlus Logo" onerror="this.src='./Assets/danh_sach_doi_tac/logo.png'">
+          </div>
+          <div class="partner-info">
+            <div class="partner-name">NCCPlus</div>
+            <div class="partner-email">nccplus@gmail.com</div>
+          </div>
+          <button class="btn-chat-bubble" title="Trò chuyện">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            </svg>
+          </button>
+        </div>
+
+        <nav class="partner-menu">
+          <a class="menu-link">
+            <div class="menu-link-left">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+              <span>Thông tin chung</span>
+            </div>
+          </a>
+
+          <a class="menu-link active">
+            <div class="menu-link-left">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+              <span>Danh sách Ứng dụng</span>
+            </div>
+            <span class="menu-badge">1</span>
+          </a>
+
+          <a class="menu-link">
+            <div class="menu-link-left">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+              </svg>
+              <span>Phân tích</span>
+            </div>
+          </a>
+        </nav>
+      </aside>
+
+      <!-- 4. RIGHT CONTENT AREA -->
+      <main class="content-area">
+        
+        <!-- SOFTWARE HEADER BANNER -->
+        <section class="software-banner">
+          <button class="btn-back" title="Quay lại">‹</button>
+          <h1 class="software-title">NCC Software</h1>
+          <span class="software-badge">Sản phẩm điện tử</span>
+        </section>
+
+        <!-- ACTION BAR -->
+        <section class="action-bar">
+          <div class="action-left">
+            <span class="action-label">Hành động</span>
+            <div class="view-toggle-group">
+              <button class="view-btn" title="Xem danh sách">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="8" y1="6" x2="21" y2="6"></line>
+                  <line x1="8" y1="12" x2="21" y2="12"></line>
+                  <line x1="8" y1="18" x2="21" y2="18"></line>
+                  <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                  <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                  <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                </svg>
+              </button>
+              <button class="view-btn active" title="Xem dạng lưới">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+              </button>
+            </div>
+            <button class="btn-sort-dropdown">
+              <span>Sắp xếp</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+          </div>
+
+          <button class="btn-create-script" id="btnCreateScript">
+            <span>Tạo kịch bản</span>
+            <span class="icon-plus-circle">+</span>
+          </button>
+        </section>
+
+        <!-- CARDS GRID -->
+        <section class="cards-grid" id="scriptsGrid">
+          
+          <!-- Card 1 (From Screenshot) -->
+          <article class="script-card">
+            <div class="card-header">
+              <div class="card-avatar">SW</div>
+              <div class="card-title-box">
+                <div class="card-title">Kịch bản A</div>
+                <div class="card-subtitle">0 kịch bản</div>
+              </div>
+              <button class="btn-card-menu" aria-label="Menu">⋮</button>
+            </div>
+
+            <div class="card-body">
+              <div class="stat-row">
+                <span>Thời gian tạo</span>
+                <span class="stat-val">10:00 22/10/2020</span>
+              </div>
+              <div class="stat-row">
+                <span>Số lượng khối</span>
+                <span class="stat-val">4</span>
+              </div>
+              <div class="stat-row">
+                <span>Nhân viên</span>
+                <span class="stat-val">20</span>
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <span class="category-label">Thể loại</span>
+              <a class="category-link" onclick="alert('🚀 Bắt đầu hội thoại Kịch bản A...');">Bắt đầu hội thoại</a>
+            </div>
+          </article>
+
+        </section>
+
+      </main>
+
+    </div>
+
+    <!-- FLOATING ACTION BUTTON (BOT MASCOT) -->
+    <button class="fab-bot" title="VSS Assistant" onclick="alert('🤖 Xin chào! VSS Assistant luôn sẵn sàng hỗ trợ bạn.');">
+      <img src="./Assets/danh_sach_doi_tac/flowChat.png" alt="Chat Assistant" style="width: 60px; height: 60px; object-fit: contain;">
+    </button>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Load current user from localStorage if logged in
+      const userStr = localStorage.getItem('vss_current_user');
+      if (userStr) {
+        try {
+          const user = JSON.parse(userStr);
+          if (user.displayName) {
+            document.getElementById('userNameDisplay').textContent = user.displayName;
+            document.getElementById('userAvatarText').textContent = user.displayName.charAt(0).toUpperCase();
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      // Logout handler when clicking on profile
+      const userBox = document.getElementById('userProfileDropdown');
+      if (userBox) {
+        userBox.addEventListener('click', () => {
+          if (confirm('Bạn có muốn đăng xuất và quay về trang Đăng nhập?')) {
+            localStorage.removeItem('vss_current_user');
+            window.location.href = 'index.html';
+          }
+        });
+      }
+
+      // Interactive Create Script Button Demo
+      const btnCreate = document.getElementById('btnCreateScript');
+      const grid = document.getElementById('scriptsGrid');
+      let scriptCount = 1;
+
+      if (btnCreate && grid) {
+        btnCreate.addEventListener('click', () => {
+          scriptCount++;
+          const now = new Date();
+          const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth()+1).padStart(2, '0')}/${now.getFullYear()}`;
+          
+          const card = document.createElement('article');
+          card.className = 'script-card';
+          card.style.animation = 'fadeInCard 0.3s ease';
+          card.innerHTML = `
+            <div class="card-header">
+              <div class="card-avatar" style="background: #10b981;">KB</div>
+              <div class="card-title-box">
+                <div class="card-title">Kịch bản tự động #${scriptCount}</div>
+                <div class="card-subtitle">1 kịch bản mới</div>
+              </div>
+              <button class="btn-card-menu" aria-label="Menu">⋮</button>
+            </div>
+            <div class="card-body">
+              <div class="stat-row">
+                <span>Thời gian tạo</span>
+                <span class="stat-val">${timeStr}</span>
+              </div>
+              <div class="stat-row">
+                <span>Số lượng khối</span>
+                <span class="stat-val">6</span>
+              </div>
+              <div class="stat-row">
+                <span>Nhân viên</span>
+                <span class="stat-val">12</span>
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="category-label">Thể loại</span>
+              <a class="category-link" onclick="alert('🚀 Bắt đầu hội thoại Kịch bản tự động #${scriptCount}...');">Bắt đầu hội thoại</a>
+            </div>
+          `;
+          grid.prepend(card);
+        });
+      }
+    });
+  </script>
+  <style>
+    @keyframes fadeInCard {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</body>
+</html>

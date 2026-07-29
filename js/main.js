@@ -118,9 +118,24 @@ function initViewTransitions() {
 // ------------------------------------------
 let toastTimeout = null;
 
-function showToast(message) {
+function showToast(message, type = 'error') {
   const toast = document.getElementById('errorToast');
   if (!toast) return;
+
+  // Set style based on type (error, success, warning)
+  toast.classList.remove('error-toast', 'success-toast', 'warning-toast');
+  toast.classList.add(`${type}-toast`);
+
+  const iconEl = toast.querySelector('.toast-icon');
+  if (iconEl) {
+    if (type === 'success') {
+      iconEl.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" fill="#10b981" stroke="none"></circle><path d="M8 12l3 3 5-5" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>`;
+    } else if (type === 'warning') {
+      iconEl.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" fill="#f59e0b" stroke="none"></circle><path d="M12 8v4m0 4h.01" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"></path></svg>`;
+    } else {
+      iconEl.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" fill="#e60012" stroke="none"></circle><path d="M15 9l-6 6M9 9l6 6" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"></path></svg>`;
+    }
+  }
 
   if (message) {
     const msgEl = toast.querySelector('.toast-message');
@@ -132,7 +147,7 @@ function showToast(message) {
   if (toastTimeout) clearTimeout(toastTimeout);
   toastTimeout = setTimeout(() => {
     hideToast();
-  }, 5000);
+  }, type === 'warning' ? 6000 : 4000);
 }
 
 function hideToast() {
@@ -146,61 +161,161 @@ function hideToast() {
 // ------------------------------------------
 // 5. LOGIN FORM VALIDATION & SIMULATION
 // ------------------------------------------
+let lockoutInterval = null;
+
 function initFormValidations() {
   const loginForm = document.getElementById('loginForm');
   const accountInput = document.getElementById('accountInput');
   const passwordInput = document.getElementById('passwordInput');
   const accountGroup = document.getElementById('accountGroup');
   const passwordGroup = document.getElementById('passwordGroup');
+  const accountError = document.getElementById('accountError');
+  const passwordError = document.getElementById('passwordError');
 
   if (!loginForm) return;
+
+  const submitBtn = loginForm.querySelector('.btn-submit');
+
+  // Helper to check and enforce 5 failed attempts lockout
+  function checkLockoutState() {
+    const lockUntil = parseInt(localStorage.getItem('vss_login_lock_until') || '0', 10);
+    const now = Date.now();
+
+    if (lockUntil && now < lockUntil) {
+      const remainSec = Math.ceil((lockUntil - now) / 1000);
+      accountInput.disabled = true;
+      passwordInput.disabled = true;
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.classList.add('btn-disabled');
+        submitBtn.textContent = `Tạm khóa (${remainSec}s)`;
+      }
+
+      if (!lockoutInterval) {
+        lockoutInterval = setInterval(() => {
+          checkLockoutState();
+        }, 1000);
+      }
+      return true;
+    } else if (lockUntil && now >= lockUntil) {
+      // Lockout expired -> unlock
+      localStorage.removeItem('vss_login_lock_until');
+      localStorage.setItem('vss_login_failed_attempts', '0');
+      if (lockoutInterval) {
+        clearInterval(lockoutInterval);
+        lockoutInterval = null;
+      }
+      accountInput.disabled = false;
+      passwordInput.disabled = false;
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('btn-disabled');
+        submitBtn.textContent = 'Đăng nhập';
+      }
+    }
+    return false;
+  }
+
+  // Check lockout on page load
+  checkLockoutState();
+
+  // Clear errors when typing
+  accountInput.addEventListener('input', () => {
+    accountGroup.classList.remove('error');
+  });
+  passwordInput.addEventListener('input', () => {
+    passwordGroup.classList.remove('error');
+  });
 
   loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
     hideToast();
 
-    let hasError = false;
+    // Check if currently locked out
+    if (checkLockoutState()) {
+      showToast('⚠️ Tài khoản đang bị tạm khóa do nhập sai nhiều lần. Vui lòng thử lại sau!', 'warning');
+      return;
+    }
 
-    // Validate Account
-    if (!accountInput.value.trim()) {
+    let hasError = false;
+    const rawAccount = accountInput.value.trim();
+    const rawPassword = passwordInput.value.trim();
+
+    // 1. Validate Account / Email Format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!rawAccount) {
+      if (accountError) accountError.textContent = 'Bạn chưa nhập tài khoản';
+      accountGroup.classList.add('error');
+      hasError = true;
+    } else if (!emailRegex.test(rawAccount)) {
+      if (accountError) accountError.textContent = 'Tài khoản phải đúng định dạng email (vd: user@example.com)';
       accountGroup.classList.add('error');
       hasError = true;
     } else {
       accountGroup.classList.remove('error');
     }
 
-    // Validate Password
-    if (!passwordInput.value.trim()) {
+    // 2. Validate Password Format
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!rawPassword) {
+      if (passwordError) passwordError.textContent = 'Bạn chưa nhập mật khẩu';
+      passwordGroup.classList.add('error');
+      hasError = true;
+    } else if (!passwordRegex.test(rawPassword)) {
+      if (passwordError) passwordError.textContent = 'Mật khẩu phải từ 8 ký tự, có chữ hoa, thường, số và ký tự đặc biệt';
       passwordGroup.classList.add('error');
       hasError = true;
     } else {
       passwordGroup.classList.remove('error');
     }
 
-    // If validation fails -> State: "chưa điền thông tin"
+    // If format is invalid, show inline errors without reloading
     if (hasError) {
       return;
     }
 
-    // Simulate Authentication Logic
-    const username = accountInput.value.trim().toLowerCase();
-    const password = passwordInput.value.trim();
+    // 3. Simulate Authentication Logic
+    const username = rawAccount.toLowerCase();
+    const password = rawPassword;
 
     // Check for special Demo triggers
     if (username === 'newuser' || username === 'firsttime' || password === 'newuser') {
-      // Trigger First Time Change Password View -> State: "Đổi mật khẩu lần đầu"
       switchView('view-first-time');
       return;
     }
 
-    if ((username === 'admin' && password === '123456') || (username === 'minhnn@gmail.com' && password === '123456')) {
-      // Successful login
-      alert('🎉 Đăng nhập thành công vào VSS Chat Platform!');
+    // Check valid credentials
+    if ((username === 'admin@gmail.com' && password === 'Admin@123!') || (username === 'minhnn@gmail.com' && password === 'Minhnn@123!')) {
+      // Successful login -> reset failed attempts and redirect to dashboard
+      localStorage.removeItem('vss_login_failed_attempts');
+      localStorage.removeItem('vss_login_lock_until');
+      localStorage.setItem('vss_current_user', JSON.stringify({
+        username: username,
+        displayName: 'Lê Việt Cường',
+        email: username === 'admin' ? 'cuonglv@vss.gov.vn' : 'cuonglv@gmail.com'
+      }));
+
+      window.location.href = 'danh-sach-doi-tac.html';
       return;
     }
 
-    // Default failure for any other credentials -> State: "Sai thông tin"
-    showToast('Bạn đã nhập sai tài khoản hoặc mật khẩu');
+    // 4. Handle Failed Login & Limit Attempts (5 times)
+    let failedAttempts = parseInt(localStorage.getItem('vss_login_failed_attempts') || '0', 10) + 1;
+    localStorage.setItem('vss_login_failed_attempts', failedAttempts.toString());
+
+    accountGroup.classList.add('error');
+    passwordGroup.classList.add('error');
+
+    if (failedAttempts >= 5) {
+      const lockDuration = 30 * 1000; // 30 seconds lockout
+      const lockUntil = Date.now() + lockDuration;
+      localStorage.setItem('vss_login_lock_until', lockUntil.toString());
+      showToast('⚠️ Bạn đã đăng nhập sai 5 lần liên tiếp! Tài khoản tạm thời bị khóa trong 30 giây.', 'warning');
+      checkLockoutState();
+    } else {
+      const remain = 5 - failedAttempts;
+      showToast(`❌ Sai email/tài khoản hoặc mật khẩu! (Bạn còn ${remain} lần thử trước khi bị khóa)`, 'error');
+    }
   });
 }
 
