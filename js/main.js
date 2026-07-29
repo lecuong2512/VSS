@@ -269,8 +269,9 @@ function initFormValidations() {
       passwordGroup.classList.remove('error');
     }
 
-    // If format is invalid, show inline errors without reloading
+    // If format is invalid, show inline errors and count as failed attempt
     if (hasError) {
+      handleLoginFailure(true);
       return;
     }
 
@@ -300,21 +301,31 @@ function initFormValidations() {
     }
 
     // 4. Handle Failed Login & Limit Attempts (5 times)
-    let failedAttempts = parseInt(localStorage.getItem('vss_login_failed_attempts') || '0', 10) + 1;
-    localStorage.setItem('vss_login_failed_attempts', failedAttempts.toString());
+    handleLoginFailure(false);
 
-    accountGroup.classList.add('error');
-    passwordGroup.classList.add('error');
+    function handleLoginFailure(isFormatError) {
+      let failedAttempts = parseInt(localStorage.getItem('vss_login_failed_attempts') || '0', 10) + 1;
+      localStorage.setItem('vss_login_failed_attempts', failedAttempts.toString());
 
-    if (failedAttempts >= 5) {
-      const lockDuration = 30 * 1000; // 30 seconds lockout
-      const lockUntil = Date.now() + lockDuration;
-      localStorage.setItem('vss_login_lock_until', lockUntil.toString());
-      showToast('⚠️ Bạn đã đăng nhập sai 5 lần liên tiếp! Tài khoản tạm thời bị khóa trong 30 giây.', 'warning');
-      checkLockoutState();
-    } else {
-      const remain = 5 - failedAttempts;
-      showToast(`❌ Sai email/tài khoản hoặc mật khẩu! (Bạn còn ${remain} lần thử trước khi bị khóa)`, 'error');
+      if (!isFormatError) {
+        accountGroup.classList.add('error');
+        passwordGroup.classList.add('error');
+      }
+
+      if (failedAttempts >= 5) {
+        const lockDuration = 30 * 1000; // 30 seconds lockout
+        const lockUntil = Date.now() + lockDuration;
+        localStorage.setItem('vss_login_lock_until', lockUntil.toString());
+        showToast('⚠️ Bạn đã đăng nhập sai quá số lần! Tài khoản tạm thời bị khóa.', 'warning');
+        checkLockoutState();
+      } else {
+        const remain = 5 - failedAttempts;
+        if (isFormatError) {
+          showToast(`❌ Sai định dạng! (Bạn còn ${remain} lần thử trước khi bị khóa)`, 'error');
+        } else {
+          showToast(`❌ Sai email/tài khoản hoặc mật khẩu! (Bạn còn ${remain} lần thử trước khi bị khóa)`, 'error');
+        }
+      }
     }
   });
 }
