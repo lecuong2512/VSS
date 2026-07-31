@@ -1,0 +1,234 @@
+<div class="app-container">
+  <div class="left-banner">
+    <!-- Since assets were moved to public/Assets -->
+    <img src="/Assets/Login/group_18171.png" alt="Banner" class="banner-bg-img" onerror="this.style.display='none'">
+    <div class="text-wrapper">
+      <h1 class="banner-title">{{ t.translate('login.system_name') }}</h1>
+      <p class="banner-subtitle">{{ t.translate('login.subtitle') }}</p>
+      <div class="pagination-dots">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-section">
+    <div class="top-bar">
+      <div class="toast-container" id="toastContainer">
+        <div *ngIf="toastMessage" class="toast" [ngClass]="toastType + '-toast'">
+          <div class="toast-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" fill="currentColor" stroke="none"></circle>
+              <path d="M15 9l-6 6M9 9l6 6" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"></path>
+            </svg>
+          </div>
+          <div class="toast-message">{{ toastMessage }}</div>
+        </div>
+      </div>
+      <div class="lang-dropdown">
+        <button class="lang-btn" type="button" (click)="toggleLangMenu($event)">
+          <svg class="globe-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span class="current-lang-text">{{ t.currentLang() === 'vi' ? t.translate('login.lang_vi') : t.translate('login.lang_en') }}</span>
+          <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="custom-lang-menu" *ngIf="isLangMenuOpen">
+          <a class="lang-item" [class.active]="t.currentLang() === 'vi'" (click)="setLang('vi')">{{ t.translate('login.lang_vi') }}</a>
+          <a class="lang-item" [class.active]="t.currentLang() === 'en'" (click)="setLang('en')">{{ t.translate('login.lang_en') }}</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-card-container">
+      <div class="auth-card">
+        
+        <!-- VIEW 1: MAIN LOGIN -->
+        <div class="view-pane" [class.active]="currentView === 'login'">
+          <div class="card-header-logo">
+            <img src="/Assets/Login/logo.png" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
+          </div>
+          <h2 class="card-title">{{ t.translate('login.title') }}</h2>
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form" novalidate>
+            <div class="form-group" [class.error]="loginForm.get('account')?.invalid && loginForm.get('account')?.touched">
+              <div class="input-wrapper" [class.has-value]="loginForm.get('account')?.value">
+                <label class="floating-label">{{ t.translate('login.account') }}</label>
+                <input type="text" formControlName="account" class="form-input" [placeholder]="t.translate('login.account')">
+              </div>
+              <span class="error-message" *ngIf="loginForm.get('account')?.invalid && loginForm.get('account')?.touched">
+                {{ t.translate('login.err_account') }}
+              </span>
+            </div>
+            
+            <div class="form-group" [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+              <div class="input-wrapper" [class.has-value]="loginForm.get('password')?.value">
+                <label class="floating-label">{{ t.translate('login.password') }}</label>
+                <input [type]="showPassword ? 'text' : 'password'" formControlName="password" class="form-input" [placeholder]="t.translate('login.password')">
+                <button type="button" class="toggle-password" (click)="togglePassword()">
+                  <svg *ngIf="!showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                  <svg *ngIf="showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+              </div>
+              <span class="error-message" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+                {{ t.translate('login.err_password') }}
+              </span>
+            </div>
+
+            <div class="form-row">
+              <label class="checkbox-label">
+                <input type="checkbox">
+                <span class="custom-checkbox">
+                  <svg viewBox="0 0 12 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                  </svg>
+                </span>
+                <span>{{ t.translate('login.remember') }}</span>
+              </label>
+              <a href="javascript:void(0)" (click)="switchView('forgot-email')" class="forgot-link">{{ t.translate('login.forgot') }}</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary" [disabled]="isLocked">
+              {{ isLocked ? t.translate('login.btn_locked').replace('{{remainSec}}', remainSec.toString()) : t.translate('login.submit') }}
+            </button>
+          </form>
+          <div class="card-footer">
+            <p>{{ t.translate('login.no_account') }} <a href="javascript:void(0)" class="register-link">{{ t.translate('login.register') }}</a></p>
+          </div>
+        </div>
+
+        <!-- VIEW 2: FORGOT PASSWORD - STEP 1 (EMAIL) -->
+        <div class="view-pane" [class.active]="currentView === 'forgot-email'" id="view-forgot-email">
+          <div class="red-header-bar">
+            <button type="button" class="btn-back" (click)="switchView('login')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+              {{ t.translate('forgot.back') }}
+            </button>
+            <h3 class="header-title">{{ t.translate('forgot.title') }}</h3>
+          </div>
+          <div class="pane-body">
+            <div class="step-icon-wrapper">
+              <img src="/Assets/dang_nhap_quen_tai_khoan_nhap_email/group_18198.png" alt="Icon" class="step-image" onerror="this.style.display='none'">
+            </div>
+            <h3 class="step-title red-title">{{ t.translate('forgot.step1_title') }}</h3>
+            <p class="step-desc">{{ t.translate('forgot.step1_desc') }}</p>
+            
+            <form [formGroup]="forgotEmailForm" (ngSubmit)="onForgotEmailSubmit()" class="auth-form" novalidate>
+              <div class="form-group">
+                <div class="input-wrapper simple-box">
+                  <input type="text" formControlName="email" class="form-input" [placeholder]="t.translate('forgot.step1_placeholder')">
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-step" [disabled]="forgotEmailForm.invalid">{{ t.translate('forgot.next') }}</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- VIEW 3: FORGOT PASSWORD - STEP 2 (RECEIVE CODE) -->
+        <div class="view-pane" [class.active]="currentView === 'forgot-code'" id="view-forgot-code">
+          <div class="red-header-bar">
+            <button type="button" class="btn-back" (click)="switchView('forgot-email')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+              {{ t.translate('forgot.back') }}
+            </button>
+            <h3 class="header-title">{{ t.translate('forgot.title') }}</h3>
+          </div>
+          <div class="pane-body">
+            <div class="step-icon-wrapper">
+              <img src="/Assets/dang_nhap_quen_tai_khoan_nhan_code/group_18209.png" alt="Icon" class="step-image" onerror="this.style.display='none'">
+            </div>
+            <h3 class="step-title red-title">{{ t.translate('forgot.step2_title') }}</h3>
+            <p class="step-desc">{{ t.translate('forgot.step2_desc') }}</p>
+            
+            <form [formGroup]="forgotCodeForm" (ngSubmit)="onForgotCodeSubmit()" class="auth-form" novalidate>
+              <div class="form-group">
+                <div class="input-wrapper input-with-btn">
+                  <input type="text" formControlName="code" class="form-input" [placeholder]="t.translate('forgot.step2_placeholder')" maxlength="6">
+                  <span class="divider"></span>
+                  <button type="button" class="btn-resend" (click)="resendCode()">{{ t.translate('forgot.resend') }}</button>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-step" [disabled]="forgotCodeForm.invalid">{{ t.translate('forgot.next') }}</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- VIEW 4: FORGOT PASSWORD - STEP 3 (NEW PASSWORD) -->
+        <div class="view-pane" [class.active]="currentView === 'forgot-newpass'" id="view-forgot-newpass">
+          <div class="red-header-bar">
+            <button type="button" class="btn-back" (click)="switchView('forgot-code')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+              {{ t.translate('forgot.back') }}
+            </button>
+            <h3 class="header-title">{{ t.translate('forgot.title') }}</h3>
+          </div>
+          <div class="pane-body">
+            <div class="step-icon-wrapper">
+              <img src="/Assets/dang_nhap_quen_tai_khoan_nhap_mat_khau_moi/group_18210.png" alt="Icon" class="step-image" onerror="this.style.display='none'">
+            </div>
+            <h3 class="step-title red-title">{{ t.translate('forgot.step3_title') }}</h3>
+            <p class="step-desc">{{ t.translate('forgot.step3_desc') }}</p>
+            
+            <form [formGroup]="forgotNewPassForm" (ngSubmit)="onForgotNewPassSubmit()" class="auth-form" novalidate>
+              <div class="form-group">
+                <div class="input-wrapper">
+                  <label class="floating-label">{{ t.translate('forgot.new_pass') }}</label>
+                  <input type="password" formControlName="newPass" class="form-input" [placeholder]="t.translate('forgot.new_pass')">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="input-wrapper">
+                  <label class="floating-label">{{ t.translate('forgot.confirm_pass') }}</label>
+                  <input type="password" formControlName="confirmPass" class="form-input" [placeholder]="t.translate('forgot.confirm_pass')">
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-step" [disabled]="forgotNewPassForm.invalid">{{ t.translate('forgot.confirm') }}</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- VIEW 5: FIRST TIME LOGIN - CHANGE PASSWORD -->
+        <div class="view-pane" [class.active]="currentView === 'first-time'" id="view-first-time">
+          <div class="red-header-bar">
+            <button type="button" class="btn-back" (click)="switchView('login')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+              {{ t.translate('forgot.back') }}
+            </button>
+            <h3 class="header-title">{{ t.translate('first_time.title') }}</h3>
+          </div>
+          <div class="pane-body">
+            <div class="step-icon-wrapper">
+              <img src="/Assets/dang_nhap_quen_tai_khoan_nhap_email/group_18198.png" alt="Icon" class="step-image" onerror="this.style.display='none'">
+            </div>
+            <h3 class="step-title red-title">{{ t.translate('first_time.step_title') }}</h3>
+            <p class="step-desc">{{ t.translate('first_time.desc') }}</p>
+            
+            <form [formGroup]="firstTimeForm" (ngSubmit)="onFirstTimeSubmit()" class="auth-form" novalidate>
+              <div class="form-group">
+                <div class="input-wrapper simple-box">
+                  <input type="password" formControlName="newPass" class="form-input" [placeholder]="t.translate('forgot.new_pass')">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="input-wrapper simple-box">
+                  <input type="password" formControlName="confirmPass" class="form-input" [placeholder]="t.translate('forgot.confirm_pass')">
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-step" [disabled]="firstTimeForm.invalid">{{ t.translate('forgot.next') }}</button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

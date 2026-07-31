@@ -1,0 +1,376 @@
+<!-- 1. LEFTMOST VERTICAL NAV SIDEBAR -->
+<aside class="app-sidebar">
+  <a class="logo-box">
+    <img src="/Assets/danh_sach_doi_tac/logo.png" alt="VSS Logo" class="sidebar-logo">
+  </a>
+
+  <nav class="nav-list">
+    <a class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+      </div>
+      <span>Live chat</span>
+    </a>
+
+    <a class="nav-item active">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+      </div>
+      <span>Users</span>
+    </a>
+
+    <a class="nav-item">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="3" y1="9" x2="21" y2="9"></line>
+          <line x1="9" y1="21" x2="9" y2="9"></line>
+        </svg>
+      </div>
+      <span>Template</span>
+    </a>
+  </nav>
+</aside>
+
+<!-- 2. RIGHT APP CONTAINER -->
+<div class="app-container">
+  
+  <!-- TOP HEADER BAR -->
+  <header class="top-header">
+    <div class="top-tabs">
+      <div class="tab-pill">
+        <span class="tab-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+        </span>
+        <span>Dashboard</span>
+        <span class="tab-close">×</span>
+      </div>
+
+      <div class="tab-pill active">
+        <span class="tab-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+          </svg>
+        </span>
+        <span>{{ t.translate('users.title') }}</span>
+        <span class="tab-close">×</span>
+      </div>
+    </div>
+
+    <div class="top-user-actions">
+      <!-- Language Select Custom Dropdown -->
+      <div class="lang-dropdown" style="position: relative;">
+        <button class="lang-btn" type="button" (click)="toggleLangMenu($event)" style="background: transparent; border: none; display: flex; align-items: center; gap: 4px; font-weight: 600; font-size: 14px; color: var(--text-muted); cursor: pointer; padding: 4px;">
+          <span class="current-lang-text">{{ t.currentLang() === 'vi' ? 'VI' : 'EN' }}</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="custom-lang-menu" *ngIf="isLangMenuOpen" style="position: absolute; top: 100%; right: 0; background: #fff; border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: flex; flex-direction: column; min-width: 80px; z-index: 100; padding: 4px; margin-top: 8px;">
+          <a class="lang-item" [class.active]="t.currentLang() === 'vi'" (click)="setLang('vi')" style="padding: 6px 12px; cursor: pointer; font-size: 13.5px; border-radius: 4px;">VI</a>
+          <a class="lang-item" [class.active]="t.currentLang() === 'en'" (click)="setLang('en')" style="padding: 6px 12px; cursor: pointer; font-size: 13.5px; border-radius: 4px;">EN</a>
+        </div>
+      </div>
+
+      <button class="btn-notify" aria-label="Thông báo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+        <span class="notify-dot"></span>
+      </button>
+
+      <div class="user-profile-box" (click)="toggleProfileMenu($event)">
+        <div class="user-avatar-wrap">
+          <div class="user-avatar">{{ userAvatarLetter }}</div>
+          <span class="online-badge"></span>
+        </div>
+        <div class="user-meta">
+          <span class="user-fullname">{{ userNameDisplay }}</span>
+          <span class="user-role-text">Quản trị viên</span>
+        </div>
+        
+        <!-- Profile Dropdown -->
+        <div class="profile-dropdown" *ngIf="isProfileMenuOpen">
+          <a class="dropdown-item text-red" (click)="logout()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            {{ t.translate('users.logout') }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN HORIZONTAL BODY -->
+  <div class="main-body">
+    
+    <!-- 3. SECONDARY SIDEBAR (FILTERS) -->
+    <aside class="partner-sidebar">
+      <div class="breadcrumb">
+        Admin / Quản lý / <span class="current">Người dùng</span>
+      </div>
+
+      <div class="partner-brand-box">
+        <div class="partner-logo" style="background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 24px; height: 24px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        </div>
+        <div class="partner-info">
+          <div class="partner-name">Quản lý User</div>
+          <div class="partner-email">Hệ thống VSS</div>
+        </div>
+      </div>
+
+      <nav class="partner-menu">
+        <a class="menu-link" [class.active]="activeFilter === 'all'" (click)="setFilter('all')">
+          <div class="menu-link-left">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            <span>Tất cả người dùng</span>
+          </div>
+          <span class="menu-badge" *ngIf="activeFilter === 'all'">{{ users().length }}</span>
+        </a>
+
+        <a class="menu-link" [class.active]="activeFilter === 'admin'" (click)="setFilter('admin')">
+          <div class="menu-link-left">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <span>Quản trị viên</span>
+          </div>
+        </a>
+
+        <a class="menu-link" [class.active]="activeFilter === 'staff'" (click)="setFilter('staff')">
+          <div class="menu-link-left">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+            <span>Nhân viên</span>
+          </div>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- 4. RIGHT CONTENT AREA -->
+    <main class="content-area">
+      
+      <!-- SOFTWARE HEADER BANNER -->
+      <section class="software-banner">
+        <button class="btn-back" title="Quay lại">‹</button>
+        <h1 class="software-title">{{ t.translate('users.title') }}</h1>
+        <span class="software-badge">Hoạt động</span>
+      </section>
+
+      <!-- ACTION BAR -->
+      <section class="action-bar">
+        <div class="action-left">
+          <span class="action-label">Danh sách</span>
+          <div class="view-toggle-group">
+            <button class="view-btn" [class.active]="viewMode === 'grid'" (click)="setViewMode('grid')" title="Xem dạng lưới">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+            </button>
+            <button class="view-btn" [class.active]="viewMode === 'table'" (click)="setViewMode('table')" title="Xem danh sách">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+          
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" [placeholder]="t.translate('users.search')" (input)="updateSearch($event)">
+          </div>
+        </div>
+
+        <button class="btn-create-script" (click)="openAddModal()">
+          <span>{{ t.translate('users.add') }}</span>
+          <span class="icon-plus-circle">+</span>
+        </button>
+      </section>
+
+      <!-- CARDS GRID -->
+      <section class="cards-grid" *ngIf="viewMode === 'grid'">
+        <article class="script-card" *ngFor="let user of filteredUsers()">
+          <div class="card-header">
+            <div class="card-avatar">
+              <img [src]="user.avatar" alt="Avatar" (error)="user.avatar = 'https://i.pravatar.cc/150?u=' + user.id">
+            </div>
+            <div class="card-title-box">
+              <div class="card-title">{{ user.first_name }} {{ user.last_name }}</div>
+              <div class="card-subtitle">{{ user.email }}</div>
+            </div>
+            <div class="card-menu-wrap">
+              <button class="btn-card-menu" aria-label="Menu" (click)="toggleCardMenu($event, user.id)">⋮</button>
+              <div class="card-dropdown" *ngIf="activeCardMenuId === user.id">
+                <a class="dropdown-item" (click)="openEditModal(user)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                  {{ t.translate('users.edit') }}
+                </a>
+                <a class="dropdown-item text-red" (click)="deleteUser(user.id)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                  {{ t.translate('users.delete') }}
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="stat-row">
+              <span>Trạng thái</span>
+              <span class="stat-val text-green" [class.text-muted]="user.status === 'inactive'">{{ user.status === 'inactive' ? 'Đã khóa' : 'Đang hoạt động' }}</span>
+            </div>
+            <div class="stat-row">
+              <span>Ngày tham gia</span>
+              <span class="stat-val">22/10/2023</span>
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <span class="category-label">Phân quyền</span>
+            <a class="category-link">{{ user.role === 'admin' ? 'Quản trị viên' : 'Nhân viên' }}</a>
+          </div>
+        </article>
+      </section>
+
+      <!-- TABLE VIEW -->
+      <section class="table-container" *ngIf="viewMode === 'table'">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>Người dùng</th>
+              <th>Số điện thoại</th>
+              <th>Phân quyền</th>
+              <th>Trạng thái</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of filteredUsers()">
+              <td>
+                <div class="table-user-info">
+                  <img [src]="user.avatar" class="table-avatar" (error)="user.avatar = 'https://i.pravatar.cc/150?u=' + user.id">
+                  <div>
+                    <div class="table-name">{{ user.first_name }} {{ user.last_name }}</div>
+                    <div class="table-email">{{ user.email }}</div>
+                  </div>
+                </div>
+              </td>
+              <td>{{ user.phone || '---' }}</td>
+              <td><span class="role-badge" [class.admin]="user.role === 'admin'">{{ user.role === 'admin' ? 'Quản trị viên' : 'Nhân viên' }}</span></td>
+              <td><span class="status-badge" [class.active]="user.status !== 'inactive'">{{ user.status === 'inactive' ? 'Đã khóa' : 'Đang hoạt động' }}</span></td>
+              <td>
+                <div class="table-actions">
+                  <button class="btn-icon-action" (click)="openEditModal(user)" title="Chỉnh sửa">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                  </button>
+                  <button class="btn-icon-action text-red" (click)="deleteUser(user.id)" title="Xóa">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- EMPTY STATE -->
+      <section *ngIf="filteredUsers().length === 0" class="empty-state">
+        <p>{{ t.translate('users.empty') }}</p>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- FLOATING ACTION BUTTON (BOT MASCOT) -->
+<button class="fab-bot" title="VSS Assistant" onclick="alert('🤖 Xin chào! VSS Assistant luôn sẵn sàng hỗ trợ bạn.');">
+  <img src="/Assets/danh_sach_doi_tac/flowChat.png" alt="Chat Assistant">
+</button>
+
+<!-- MODAL OVERLAY (Keep existing modal UI) -->
+<div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ editingId ? t.translate('users.edit_user') : t.translate('users.add_user') }}</h2>
+      <button class="btn-close" (click)="closeModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <form [formGroup]="userForm" (ngSubmit)="saveUser()" class="modal-body">
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>{{ t.translate('users.first_name') }} <span class="text-red">*</span></label>
+          <input type="text" formControlName="first_name" class="form-input">
+        </div>
+        <div class="form-group">
+          <label>{{ t.translate('users.last_name') }} <span class="text-red">*</span></label>
+          <input type="text" formControlName="last_name" class="form-input">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>{{ t.translate('users.email') }} <span class="text-red">*</span></label>
+          <input type="email" formControlName="email" class="form-input">
+        </div>
+        <div class="form-group">
+          <label>Số điện thoại</label>
+          <input type="text" formControlName="phone" class="form-input">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Vai trò <span class="text-red">*</span></label>
+          <select formControlName="role" class="form-input">
+            <option value="admin">Quản trị viên</option>
+            <option value="staff">Nhân viên</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Trạng thái <span class="text-red">*</span></label>
+          <select formControlName="status" class="form-input">
+            <option value="active">Đang hoạt động</option>
+            <option value="inactive">Đã khóa</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Ngày sinh</label>
+        <input type="date" formControlName="dob" class="form-input">
+      </div>
+
+      <div class="form-group">
+        <label>{{ t.translate('users.avatar') }}</label>
+        <input type="text" formControlName="avatar" class="form-input">
+        <div class="avatar-preview">
+          <img [src]="userForm.get('avatar')?.value || 'https://i.pravatar.cc/150'" alt="Preview" onerror="this.src='https://i.pravatar.cc/150'">
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" (click)="closeModal()">{{ t.translate('users.cancel') }}</button>
+        <button type="submit" class="btn-primary" [disabled]="userForm.invalid">{{ t.translate('users.save') }}</button>
+      </div>
+    </form>
+  </div>
+</div>
