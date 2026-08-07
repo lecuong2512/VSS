@@ -255,6 +255,8 @@
           <thead>
             <tr>
               <th>Người dùng</th>
+              <th>{{ t.translate('users.first_name') }}</th>
+              <th>{{ t.translate('users.last_name') }}</th>
               <th>Số điện thoại</th>
               <th>Phân quyền</th>
               <th>Trạng thái</th>
@@ -272,6 +274,8 @@
                   </div>
                 </div>
               </td>
+              <td>{{ user.first_name }}</td>
+              <td>{{ user.last_name }}</td>
               <td>{{ user.phone || '---' }}</td>
               <td><span class="role-badge" [class.admin]="user.role === 'admin'">{{ user.role === 'admin' ? 'Quản trị viên' : 'Nhân viên' }}</span></td>
               <td><span class="status-badge" [class.active]="user.status !== 'inactive'">{{ user.status === 'inactive' ? 'Đã khóa' : 'Đang hoạt động' }}</span></td>
